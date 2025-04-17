@@ -1,24 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import image from "../src/images-removebg-preview.png";
 import "./App.css";
 export default function App() {
   const [left, setLeft] = useState(100);
+  const [top, setTop] = useState(0);
+  const planeRef = useRef();
   useEffect(() => {
     const interval = setInterval(() => {
       setLeft((prevLeft) => {
         scrollTo(prevLeft + 2 - 100, 0);
         return prevLeft + 2;
       });
-    }, 100);
+    }, 50);
     return () => clearInterval(interval);
   }, []);
   return (
     <div
       onKeyDown={(event) => {
-        console.log(event);
+        if (event.code === "ArrowUp") {
+          planeRef.current.style.rotate = "-25deg";
+          setTop((prev) => {
+            if (prev > 0) {
+              return prev - 4;
+            } else {
+              return prev;
+            }
+          });
+        } else if (event.code === "ArrowDown") {
+          planeRef.current.style.rotate = "25deg";
+          setTop((prev) => {
+            if (prev <= 196) {
+              return prev + 4;
+            } else {
+              return prev;
+            }
+          });
+        } else if (event.code === "ArrowLeft") {
+          planeRef.current.style.rotate = "180deg";
+          setLeft((prev) => {
+            if (prev > 0) {
+              return prev - 4;
+            } else {
+              return prev;
+            }
+          });
+        } else if (event.code === "ArrowRight") {
+          planeRef.current.style.rotate = "360deg";
+          // setLeft((prev) => {
+          //   if (prev <= 196) {
+          //     return prev + 4;
+          //   } else {
+          //     return prev;
+          //   }
+          // });
+        }
       }}
       tabIndex={0}
       style={{
+        // position: "relative",
         height: "100vh",
         width: "20000vw",
         background:
@@ -27,10 +66,11 @@ export default function App() {
       }}
     >
       <img
+        ref={planeRef}
         style={{
           width: 250,
           height: 200,
-          marginTop: 20,
+          marginTop: top,
           marginLeft: left,
         }}
         src={image}
